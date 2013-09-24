@@ -17,17 +17,17 @@ class Controller_Welcome extends Controller_MainController {
 		
 		// Get User ID
 		$user = $facebook->getUser();
-		var_dump($user);
+		
 		$params = array(
 				//'scope' => 'read_stream, friends_likes',
 				'redirect_uri' => 'http://3fstest.si/welcome/facebook'
 		);
 		
 		$loginUrl = $facebook->getLoginUrl($params);
-		echo '<a href="'.$loginUrl.'">app</a>';
 		
-		$user_profile=$facebook->api('https://graph.facebook.com/'.$user.'/picture?width=140&height=110');
-		print_r($user_profile);
+		HTTP::redirect($loginUrl);
+		
+		$user_profile=$facebook->api('/me');
 	}
 	
 	public function action_twitter()

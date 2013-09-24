@@ -28,7 +28,12 @@ class Profile {
 	
 	public static function loggedIn()
 	{
-		return Session::instance()->get('user') instanceof Profile;
+		return self::current() instanceof Profile;
+	}
+	
+	public static function current()
+	{
+		return Session::instance()->get('user');
 	}
 	
 	public static function checkUnique($email)

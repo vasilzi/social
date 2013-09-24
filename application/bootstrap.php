@@ -132,6 +132,7 @@ Kohana::modules(array(
 	// 'userguide'  => MODPATH.'userguide',  // User guide and API documentation
 	'profile' => MODPATH.'profile',
 	'database' => MODPATH.'database',
+	'social' => MODPATH.'social',
 	));
 Cookie::$salt="j489fnksygf74ehfdkufesfsdd5h78900";
 /**
