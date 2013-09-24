@@ -18,6 +18,13 @@ class Controller_Welcome extends Controller_MainController {
 		// Get User ID
 		$user = $facebook->getUser();
 		var_dump($facebook);
+		$params = array(
+				//'scope' => 'read_stream, friends_likes',
+				'redirect_uri' => 'http://3fstest.si/welcome/facebook'
+		);
+		
+		$loginUrl = $facebook->getLoginUrl($params);
+		echo '<a href="'.$loginUrl.'">app</a>';
 	}
 
 } // End Welcome
