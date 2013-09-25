@@ -7,6 +7,13 @@ class Controller_MainController extends Controller {
 	public function __construct(Request $request, Response $response)
 	{
 		parent::__construct($request, $response);
+		
+		if(!Profile::loggedIn() && $this->request->controller()!='Profile' && $this->request->controller()!='Welcome')
+		{
+			Flash::set('Please log in first.');
+			HTTP::redirect('/');
+		}
+		
 		if($this->request->controller()!='Welcome')
 		{
 			$this->template=$this->request->controller().'/'.$this->request->action();

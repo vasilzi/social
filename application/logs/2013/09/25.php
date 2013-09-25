@@ -167,3 +167,37 @@
 2013-09-25 03:38:17 --- CRITICAL: ErrorException [ 4 ]: syntax error, unexpected T_BOOLEAN_AND, expecting ',' or ')' ~ MODPATH\social\classes\Controller\Social.php [ 66 ] in file:line
 2013-09-25 03:38:17 --- DEBUG: #0 [internal function]: Kohana_Core::shutdown_handler()
 #1 {main} in file:line
+2013-09-25 04:35:54 --- CRITICAL: ErrorException [ 1 ]: An iterator cannot be used with foreach by reference ~ APPPATH\classes\Controller\Welcome.php [ 8 ] in file:line
+2013-09-25 04:35:54 --- DEBUG: #0 [internal function]: Kohana_Core::shutdown_handler()
+#1 {main} in file:line
+2013-09-25 06:17:06 --- CRITICAL: ErrorException [ 8 ]: Array to string conversion ~ APPPATH\views\index.php [ 23 ] in file:line
+2013-09-25 06:17:06 --- DEBUG: #0 [internal function]: Kohana_Core::error_handler(8, 'Array to string...', 'C:\wamp\www\3fs...', 23, Array)
+#1 C:\wamp\www\3fs\social\application\views\index.php(23): implode(', ', Array)
+#2 C:\wamp\www\3fs\social\system\classes\Kohana\View.php(61): include('C:\wamp\www\3fs...')
+#3 C:\wamp\www\3fs\social\system\classes\Kohana\View.php(348): Kohana_View::capture('C:\wamp\www\3fs...', Array)
+#4 C:\wamp\www\3fs\social\application\classes\Controller\MainController.php(30): Kohana_View->render()
+#5 C:\wamp\www\3fs\social\system\classes\Kohana\Controller.php(87): Controller_MainController->after()
+#6 [internal function]: Kohana_Controller->execute()
+#7 C:\wamp\www\3fs\social\system\classes\Kohana\Request\Client\Internal.php(97): ReflectionMethod->invoke(Object(Controller_Welcome))
+#8 C:\wamp\www\3fs\social\system\classes\Kohana\Request\Client.php(114): Kohana_Request_Client_Internal->execute_request(Object(Request), Object(Response))
+#9 C:\wamp\www\3fs\social\system\classes\Kohana\Request.php(986): Kohana_Request_Client->execute(Object(Request))
+#10 C:\wamp\www\3fs\social\index.php(118): Kohana_Request->execute()
+#11 {main} in file:line
+2013-09-25 06:18:01 --- CRITICAL: ErrorException [ 8 ]: Undefined index: first_name ~ APPPATH\views\index.php [ 21 ] in C:\wamp\www\3fs\social\application\views\index.php:21
+2013-09-25 06:18:01 --- DEBUG: #0 C:\wamp\www\3fs\social\application\views\index.php(21): Kohana_Core::error_handler(8, 'Undefined index...', 'C:\wamp\www\3fs...', 21, Array)
+#1 C:\wamp\www\3fs\social\system\classes\Kohana\View.php(61): include('C:\wamp\www\3fs...')
+#2 C:\wamp\www\3fs\social\system\classes\Kohana\View.php(348): Kohana_View::capture('C:\wamp\www\3fs...', Array)
+#3 C:\wamp\www\3fs\social\application\classes\Controller\MainController.php(30): Kohana_View->render()
+#4 C:\wamp\www\3fs\social\system\classes\Kohana\Controller.php(87): Controller_MainController->after()
+#5 [internal function]: Kohana_Controller->execute()
+#6 C:\wamp\www\3fs\social\system\classes\Kohana\Request\Client\Internal.php(97): ReflectionMethod->invoke(Object(Controller_Welcome))
+#7 C:\wamp\www\3fs\social\system\classes\Kohana\Request\Client.php(114): Kohana_Request_Client_Internal->execute_request(Object(Request), Object(Response))
+#8 C:\wamp\www\3fs\social\system\classes\Kohana\Request.php(986): Kohana_Request_Client->execute(Object(Request))
+#9 C:\wamp\www\3fs\social\index.php(118): Kohana_Request->execute()
+#10 {main} in C:\wamp\www\3fs\social\application\views\index.php:21
+2013-09-25 06:23:31 --- CRITICAL: ErrorException [ 1 ]: Call to a member function getId() on a non-object ~ APPPATH\classes\Controller\Welcome.php [ 7 ] in file:line
+2013-09-25 06:23:31 --- DEBUG: #0 [internal function]: Kohana_Core::shutdown_handler()
+#1 {main} in file:line
+2013-09-25 06:28:02 --- CRITICAL: ErrorException [ 1 ]: Call to a member function getId() on a non-object ~ MODPATH\social\classes\Controller\Social.php [ 57 ] in file:line
+2013-09-25 06:28:02 --- DEBUG: #0 [internal function]: Kohana_Core::shutdown_handler()
+#1 {main} in file:line

@@ -27,8 +27,8 @@ class Controller_Profile extends Controller_MainController
 				
 				// mail();
 				
-				$flash='Please confirm you account by clicking on the link we\'ve sent you to your email.';
-				$this->template->set_global('flash', $flash);
+				Flash::set('Please confirm you account by clicking on the link we\'ve sent on your email.');
+				//$this->template->set_global('flash', $flash);
 			}
 			else
 			{
@@ -56,6 +56,7 @@ class Controller_Profile extends Controller_MainController
 				$profile->setConfirmation('')
 						   ->update();
 				$profile->login();
+				Flash::set('Your account is confirmed, you are now logged in. Welcome.');
 				HTTP::redirect('/');
 			}
 		}
@@ -82,14 +83,15 @@ class Controller_Profile extends Controller_MainController
 				$profile=Profile::getByEmailAndPass($post['email'], md5($post['password']));
 				if(!$profile)
 				{
-					$flash='Wrong login credentials.';
-					$this->template->set_global('flash', $flash);
+					Flash::set('Wrong login credentials.');
+					//$this->template->set_global('flash', $flash);
 				}
 				else
 				{
 					if($profile->getConfirmation()!="")
 					{
 						// Set flash, the user hasn't confirmed the email
+						Flash::set('Please confirm your email.');
 						HTTP::redirect('profile/login');
 					}
 					$profile->login();

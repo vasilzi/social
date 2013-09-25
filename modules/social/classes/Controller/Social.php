@@ -4,6 +4,10 @@ class Controller_Social extends Controller_MainController
 {
 	public function action_facebook_app()
 	{
+		if($this->request->query('error')=='access_denied' && $this->request->query('error_reason')=='user_denied')
+		{
+			HTTP::redirect('/social/facebook');
+		}
 		$profile_id=Profile::current()->getId();
 		
 		$facebook = new Facebook(array(
@@ -48,6 +52,7 @@ class Controller_Social extends Controller_MainController
 			$social->save();
 		}
 		
+		Flash::set('Facebook data updated.');
 		HTTP::redirect('/social/facebook');
 		exit;
 	}
@@ -104,6 +109,7 @@ class Controller_Social extends Controller_MainController
 				$social->save();
 			}
 			
+			Flash::set('Twitter data updated succesfully.');
 			HTTP::redirect('/social/twitter');
 		}
 	}
@@ -119,6 +125,42 @@ class Controller_Social extends Controller_MainController
 	
 	public function action_github()
 	{
+		$post = Validation::factory($_POST);
+		$social=Social::getByTypeAndProfile('github', Profile::current()->getId());
 		
+		if($_POST)
+		{
+			if ($post->check())
+			{
+				if(!$social)
+				{
+					$social=new Social();
+					$social->setProfileId(Profile::current()->getId())
+						   ->setTimeAdded(time())
+						   ->setType('github')
+						   ->setData(serialize(array('public_key'=>$post['public_key'])));
+					$social->save();
+				}
+				else
+				{
+					$social->setTimeAdded(time())
+						   ->setData(serialize(array('public_key'=>$post['public_key'])));
+					$social->update();
+				}
+				
+				Flash::set('GitHub public key saved succesfully.');
+				HTTP::redirect('/social/github');
+			}
+		}
+		
+		$public_key="";
+		if($social)
+		{
+			$public_key=unserialize($social->getData());
+			$public_key=$public_key['public_key'];
+		}
+		
+		$this->template->set('post', $post);
+		$this->template->set('public_key', $public_key);
 	}
 }

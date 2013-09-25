@@ -42,6 +42,11 @@ class Social {
 		return DB::select()->from('social')->where('type', '=', $type)->and_where('profile_id', '=', $profile_id)->as_object('Social')->execute()->current();
 	}
 	
+	public static function getByProfile($profile_id)
+	{
+		return DB::select()->from('social')->where('profile_id', '=', $profile_id)->order_by('time_added', 'desc')->as_object('Social')->execute();
+	}
+	
 	public function getId()
 	{
 		return $this->id;

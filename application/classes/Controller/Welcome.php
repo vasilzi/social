@@ -4,8 +4,16 @@ class Controller_Welcome extends Controller_MainController {
 
 	public function action_index()
 	{
-		//echo View::factory('index')->render();
-		//exit;
+		if(Profile::loggedIn())
+		{
+			$social_profiles=Social::getByProfile(Profile::current()->getId());
+			$social=array();
+			foreach($social_profiles as $sp)
+			{
+				$social[]=unserialize($sp->getData());
+			}
+			$this->template->set('social', $social);
+		}
 	}
 	
 	public function action_facebook()
