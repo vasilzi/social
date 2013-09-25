@@ -10,26 +10,12 @@ class Controller_Social extends Controller_MainController
 		}
 		$profile_id=Profile::current()->getId();
 		
-		$facebook = new Facebook(array(
-				'appId'  => '661318317219555',
-				'secret' => '2615823f5ad3e805418f5017f64d6929',
-		));
+		$facebook=FacebookWrapper::authorize();
 		
-		// Get User ID
-		$user = $facebook->getUser();
+		$user_profile=$facebook->api($facebook->getUser());
 		
-		$params = array(
-				//'scope' => 'read_stream, friends_likes',
-				'redirect_uri' => 'http://3fstest.si/social/facebook_app'
-		);
-		
-		if(!$user)
-		{
-			$loginUrl = $facebook->getLoginUrl($params);
-			HTTP::redirect($loginUrl);
-		}
-		
-		$user_profile=$facebook->api($user);
+		$avatar=json_decode(file_get_contents("http://graph.facebook.com/".$facebook->getUser()."/picture?type=large&redirect=false"));
+		$avatar=$avatar->data->url;
 		
 		$social=new Social();
 		$social->setProfileId($profile_id)
@@ -38,7 +24,8 @@ class Controller_Social extends Controller_MainController
 			   ->setData(serialize(array('first_name'=>$user_profile['first_name'],
 						'last_name'=>$user_profile['last_name'],
 						'location'=>$user_profile['hometown']['name'],
-						'gender'=>$user_profile['gender'])))
+						'gender'=>$user_profile['gender'],
+			   			'avatar'=>$avatar)))
 			   ->setTimeAdded(time());
 
 		$already_in=Social::getByTypeAndProfile('facebook', $profile_id);
@@ -73,45 +60,33 @@ class Controller_Social extends Controller_MainController
 			HTTP::redirect('/social/twitter');
 		}
 		
-		if (!isset($_GET["oauth_token"])) {
-			$twitter = new TwitterOAuth('pHRwKztbGNnFwtCOcUJFg', '9fkwgwtrcQm1O4SSKaldNbNex9vOePC6k9FdnKTvY');
-			$credentials = $twitter->getRequestToken("http://3fstest.si/social/twitter_app");
-			
-			$url = $twitter->getAuthorizeUrl($credentials);
-			Session::instance()->set("token", $credentials["oauth_token"]);
-			Session::instance()->set("secret", $credentials["oauth_token_secret"]);
-			HTTP::redirect($url);
-		} else {
-			$twitter = new TwitterOAuth('pHRwKztbGNnFwtCOcUJFg', '9fkwgwtrcQm1O4SSKaldNbNex9vOePC6k9FdnKTvY',
-					Session::instance()->get("token"), Session::instance()->get("secret"));
-			$credentials = $twitter->getAccessToken($_GET["oauth_verifier"]);
-			
-			$credentials=$twitter->get('account/verify_credentials');
-			
-			$social=new Social();
-			$social->setType('twitter')
-				   ->setProfileId(Profile::current()->getId())
-				   ->setSocialProfileId($credentials->id)
-				   ->setTimeAdded(time())
-				   ->setData(serialize(array(//'oauth_token'=>$credentials['oauth_token'],
-				   				   //'oauth_token_secret'=>$credentials['oauth_token_secret'],
-				   				   'location'=>$credentials->location,
-				   				   'description'=>$credentials->description)));
-			
-			$already_in=Social::getByTypeAndProfile('twitter', Profile::current()->getId());
-			if($already_in)
-			{
-				$social->setId($already_in->getId());
-				$social->update();
-			}
-			else
-			{
-				$social->save();
-			}
-			
-			Flash::set('Twitter data updated succesfully.');
-			HTTP::redirect('/social/twitter');
+		$twitter=TwitterWrapper::authorize();
+		$credentials=$twitter->get('account/verify_credentials');
+		
+		$social=new Social();
+		$social->setType('twitter')
+			   ->setProfileId(Profile::current()->getId())
+			   ->setSocialProfileId($credentials->id)
+			   ->setTimeAdded(time())
+			   ->setData(serialize(array(//'oauth_token'=>$credentials['oauth_token'],
+			   				   //'oauth_token_secret'=>$credentials['oauth_token_secret'],
+			   				   'location'=>$credentials->location,
+			   				   'description'=>$credentials->description,
+			   				   'avatar'=>$credentials->profile_image_url)));
+		
+		$already_in=Social::getByTypeAndProfile('twitter', Profile::current()->getId());
+		if($already_in)
+		{
+			$social->setId($already_in->getId());
+			$social->update();
 		}
+		else
+		{
+			$social->save();
+		}
+		
+		Flash::set('Twitter data updated succesfully.');
+		HTTP::redirect('/social/twitter');
 	}
 	
 	public function action_twitter()
@@ -123,10 +98,10 @@ class Controller_Social extends Controller_MainController
 		}
 	}
 	
-	public function action_github()
+	public function action_other()
 	{
 		$post = Validation::factory($_POST);
-		$social=Social::getByTypeAndProfile('github', Profile::current()->getId());
+		$social=Social::getByTypeAndProfile('other', Profile::current()->getId());
 		
 		if($_POST)
 		{
@@ -137,30 +112,37 @@ class Controller_Social extends Controller_MainController
 					$social=new Social();
 					$social->setProfileId(Profile::current()->getId())
 						   ->setTimeAdded(time())
-						   ->setType('github')
-						   ->setData(serialize(array('public_key'=>$post['public_key'])));
+						   ->setType('other')
+						   ->setData(serialize(array('github'=>$post['github'],
+						   							 'team'=>$post['team'])));
 					$social->save();
 				}
 				else
 				{
 					$social->setTimeAdded(time())
-						   ->setData(serialize(array('public_key'=>$post['public_key'])));
+						   ->setData(serialize(array('github'=>$post['github'],
+						   							 'team'=>$post['team'])));
 					$social->update();
 				}
 				
-				Flash::set('GitHub public key saved succesfully.');
-				HTTP::redirect('/social/github');
+				Flash::set('Succesfully saved.');
+				HTTP::redirect('/social/other');
 			}
 		}
 		
-		$public_key="";
+		$info=array();
 		if($social)
 		{
-			$public_key=unserialize($social->getData());
-			$public_key=$public_key['public_key'];
+			$info=unserialize($social->getData());
 		}
 		
 		$this->template->set('post', $post);
-		$this->template->set('public_key', $public_key);
+		$this->template->set('info', $info);
+	}
+	
+	public function action_facebook_revoke()
+	{
+		$user_profile=$facebook->api('/'.$user.'/permissions', 'delete');
+		HTTP::redirect('/social/facebook');
 	}
 }

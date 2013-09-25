@@ -1,17 +1,27 @@
 <?php echo $header; ?>
 <a class="btn btn-primary" href="/social/facebook">Facebook</a>
 <a class="btn btn-info" href="/social/twitter">Twitter</a>
-<a class="btn btn-info" href="/social/github" style="background-color:gray;border-color:gray;">GitHub</a>
+<a class="btn btn-info" href="/social/other" style="background-color:gray;border-color:gray;">Other</a>
 <div>
+<br>
 <?php
-if(isset($social))
+foreach($social as $s)
 {
+	if(isset($s['avatar']))
+	{
+		echo '<img src="'.$s['avatar'].'" style="max-width:100px;max-height:100px;margin:2px;"/>';
+	}
+}
+?>
+<br>
+<?php
 	$info=array('first_name',
 	'last_name',
 	'location',
 	'gender',
 	'description',
-	'public_key');
+	'github',
+	'team');
 	
 	foreach($info as $value){
 	?>
@@ -36,8 +46,6 @@ if(isset($social))
 	}
 	?>
 	<br/>
-	<?php }
-}
-?>
+	<?php } ?>
 </div>
 <?php echo $footer; ?>

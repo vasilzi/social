@@ -11,7 +11,6 @@
     <!-- Bootstrap core CSS -->
     <link href="/media/css/bootstrap.css" rel="stylesheet">
 </head>
-
   <body>
   <?php if(isset($flash) && $flash!=''){ ?>
 <?php echo $flash; ?>
@@ -19,10 +18,11 @@
 <div class="container">
     <div class="header">
         <ul class="nav nav-pills pull-right">
-          <li class="active"><a href="/">Home</a></li>
+          <?php $current_url=Request::current()->url(); ?>
+          <li <?php echo $current_url=='/'?'class="active"':''?>><a href="/">Home</a></li>
           <?php if(!Profile::loggedIn()){ ?>
-          <li><a href="/profile/login">Login</a></li>
-          <li><a href="/profile/register">Register</a></li>
+          <li <?php echo $current_url=='/profile/login'?'class="active"':''?>><a href="/profile/login">Login</a></li>
+          <li <?php echo $current_url=='/profile/register'?'class="active"':''?>><a href="/profile/register">Register</a></li>
           <?php } else { ?>
           <li><a href="/profile/logout">Logout</a></li>
           <?php } ?>
