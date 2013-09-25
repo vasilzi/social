@@ -37,6 +37,11 @@ class Social {
 		'type'=>$this->type))->where('id', '=', $this->id)->execute();
 	}
 	
+	public static function getByTypeAndProfile($type, $profile_id)
+	{
+		return DB::select()->from('social')->where('type', '=', $type)->and_where('profile_id', '=', $profile_id)->as_object('Social')->execute()->current();
+	}
+	
 	public function getId()
 	{
 		return $this->id;

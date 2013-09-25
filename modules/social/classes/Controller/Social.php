@@ -36,7 +36,17 @@ class Controller_Social extends Controller_MainController
 						'location'=>$user_profile['hometown']['name'],
 						'gender'=>$user_profile['gender'])))
 			   ->setTimeAdded(time());
-		$social->save();
+
+		$already_in=Social::getByTypeAndProfile('facebook', $profile_id);
+		if($already_in)
+		{
+			$social->setId($already_in->getId());
+			$social->update();
+		}
+		else
+		{
+			$social->save();
+		}
 		
 		HTTP::redirect('/social/facebook');
 		exit;
@@ -44,26 +54,66 @@ class Controller_Social extends Controller_MainController
 	
 	public function action_facebook()
 	{
-		
+		$social=Social::getByTypeAndProfile('facebook', Profile::current()->getId());
+		if($social)
+		{
+			$this->template->set('info', unserialize($social->getData()));
+		}
 	}
 	
-	public function action_twitter()
+	public function action_twitter_app()
 	{
+		if(isset($_GET['denied'])&& $_GET['denied']!='')
+		{
+			HTTP::redirect('/social/twitter');
+		}
+		
 		if (!isset($_GET["oauth_token"])) {
 			$twitter = new TwitterOAuth('pHRwKztbGNnFwtCOcUJFg', '9fkwgwtrcQm1O4SSKaldNbNex9vOePC6k9FdnKTvY');
-			$credentials = $twitter->getRequestToken("http://3fstest.si/welcome/twitter");
-			// append a ?. This is your callback URL if you specify something.
+			$credentials = $twitter->getRequestToken("http://3fstest.si/social/twitter_app");
+			
 			$url = $twitter->getAuthorizeUrl($credentials);
-			echo '<a href="'.$url.'">app</a>';
 			Session::instance()->set("token", $credentials["oauth_token"]);
 			Session::instance()->set("secret", $credentials["oauth_token_secret"]);
+			HTTP::redirect($url);
 		} else {
 			$twitter = new TwitterOAuth('pHRwKztbGNnFwtCOcUJFg', '9fkwgwtrcQm1O4SSKaldNbNex9vOePC6k9FdnKTvY',
 					Session::instance()->get("token"), Session::instance()->get("secret"));
 			$credentials = $twitter->getAccessToken($_GET["oauth_verifier"]);
-			// uses the oauth_token already.
-			// you store these in your database
-			echo '<a href="'.$credentials.'">app</a>';
+			
+			$credentials=$twitter->get('account/verify_credentials');
+			
+			$social=new Social();
+			$social->setType('twitter')
+				   ->setProfileId(Profile::current()->getId())
+				   ->setSocialProfileId($credentials->id)
+				   ->setTimeAdded(time())
+				   ->setData(serialize(array(//'oauth_token'=>$credentials['oauth_token'],
+				   				   //'oauth_token_secret'=>$credentials['oauth_token_secret'],
+				   				   'location'=>$credentials->location,
+				   				   'description'=>$credentials->description)));
+			
+			$already_in=Social::getByTypeAndProfile('twitter', Profile::current()->getId());
+			if($already_in)
+			{
+				$social->setId($already_in->getId());
+				$social->update();
+			}
+			else
+			{
+				$social->save();
+			}
+			
+			HTTP::redirect('/social/twitter');
+		}
+	}
+	
+	public function action_twitter()
+	{
+		$social=Social::getByTypeAndProfile('twitter', Profile::current()->getId());
+		if($social)
+		{
+			$this->template->set('info', unserialize($social->getData()));
 		}
 	}
 	
