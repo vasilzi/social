@@ -491,6 +491,11 @@ class Kohana_Core {
 	 */
 	public static function auto_load($class, $directory = 'classes')
 	{
+		if(strpos($class, '\\')!==false)
+		{
+			$class=explode('\\', $class);
+			$class=end($class);
+		}
 		// Transform the class name according to PSR-0
 		$class     = ltrim($class, '\\');
 		$file      = '';

@@ -23,11 +23,16 @@ class Controller_Profile extends Controller_MainController
 				$profile->setEmail($post['email'])
 						->setPassword(md5($post['password']))
 						->setConfirmation($confirmation)
-						->save();
+						->store();
 				
 				// mail();
 				
-				Flash::set('Please confirm you account by clicking on the link we\'ve sent on your email.');
+				$successful_creation=function(){
+					my\helpers\Flash::set('Please confirm your account by clicking on the link we\'ve sent on your email.');
+				};
+				
+				call_user_func($successful_creation);
+				//Flash::set('Please confirm you account by clicking on the link we\'ve sent on your email.');
 				//$this->template->set_global('flash', $flash);
 			}
 			else
@@ -54,9 +59,9 @@ class Controller_Profile extends Controller_MainController
 			{
 				// If the code is found in the database, clear the confirmation column and log in the user
 				$profile->setConfirmation('')
-						   ->update();
+						->store();
 				$profile->login();
-				Flash::set('Your account is confirmed, you are now logged in. Welcome.');
+				my\helpers\Flash::set('Your account is confirmed, you are now logged in. Welcome.');
 				HTTP::redirect('/');
 			}
 		}
@@ -83,7 +88,7 @@ class Controller_Profile extends Controller_MainController
 				$profile=Profile::getByEmailAndPass($post['email'], md5($post['password']));
 				if(!$profile)
 				{
-					Flash::set('Wrong login credentials.');
+					my\helpers\Flash::set('Wrong login credentials.');
 					//$this->template->set_global('flash', $flash);
 				}
 				else
@@ -91,7 +96,7 @@ class Controller_Profile extends Controller_MainController
 					if($profile->getConfirmation()!="")
 					{
 						// Set flash, the user hasn't confirmed the email
-						Flash::set('Please confirm your email.');
+						my\helpers\Flash::set('Please confirm your email.');
 						HTTP::redirect('profile/login');
 					}
 					$profile->login();

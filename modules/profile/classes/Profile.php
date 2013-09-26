@@ -6,12 +6,36 @@ class Profile {
 	private $password;
 	private $confirmation;
 	
-	public function save()
+	public function store()
+	{
+		// MYSQL: ON DUPLICATE KEY
+		
+		//if($this->id)
+		//	$this->update();
+		//else
+		//	$this->save();
+		
+		if(DB::select()
+			->from('profile')
+			->where('email', '=', $this->email)
+			->limit(1)
+			->execute()
+			->count()==1)
+		{
+			$this->update();
+		}
+		else
+		{
+			$this->save();
+		}
+	}
+	
+	private function save()
 	{
 		DB::insert('profile', array('email', 'password', 'confirmation'))->values(array($this->email, $this->password, $this->confirmation))->execute();
 	}
 	
-	public function update()
+	private function update()
 	{
 		DB::update('profile')->set(array('email'=>$this->email, 'password'=>$this->password, 'confirmation'=>$this->confirmation))->where('id', '=', $this->id)->execute();
 	}

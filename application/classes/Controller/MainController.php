@@ -10,7 +10,7 @@ class Controller_MainController extends Controller {
 		
 		if(!Profile::loggedIn() && $this->request->controller()!='Profile' && $this->request->controller()!='Welcome')
 		{
-			Flash::set('Please log in first.');
+			my\helpers\Flash::set('Please log in first.');
 			HTTP::redirect('/');
 		}
 		

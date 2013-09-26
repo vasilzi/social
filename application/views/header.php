@@ -29,8 +29,8 @@
           <?php } ?>
         </ul>
         <h3 class="text-muted"><a href="/">3fs</a></h3>
-        <?php if(Flash::check()){ ?>
-        <br/><span class="alert alert-info"><?php echo Flash::get(); ?></span><br/>
+        <?php if(my\helpers\Flash::check()){ ?>
+        <br/><span class="alert alert-info"><?php echo my\helpers\Flash::get(); ?></span><br/>
         <?php } ?>        
       </div>
       <br>

@@ -23,7 +23,7 @@ class Controller_Social extends Controller_MainController
 			   ->setType('facebook')
 			   ->setData(serialize(array('first_name'=>$user_profile['first_name'],
 						'last_name'=>$user_profile['last_name'],
-						'location'=>$user_profile['hometown']['name'],
+						'location'=>(isset($user_profile['hometown']))?$user_profile['hometown']['name']:'',
 						'gender'=>$user_profile['gender'],
 			   			'avatar'=>$avatar)))
 			   ->setTimeAdded(time());
@@ -39,7 +39,7 @@ class Controller_Social extends Controller_MainController
 			$social->save();
 		}
 		
-		Flash::set('Facebook data updated.');
+		my\helpers\Flash::set('Facebook data updated.');
 		HTTP::redirect('/social/facebook');
 		exit;
 	}
@@ -91,7 +91,7 @@ class Controller_Social extends Controller_MainController
 			$social->save();
 		}
 		
-		Flash::set('Twitter data updated succesfully.');
+		my\helpers\Flash::set('Twitter data updated succesfully.');
 		HTTP::redirect('/social/twitter');
 	}
 	
@@ -131,7 +131,7 @@ class Controller_Social extends Controller_MainController
 					$social->update();
 				}
 				
-				Flash::set('Succesfully saved.');
+				my\helpers\Flash::set('Succesfully saved.');
 				HTTP::redirect('/social/other');
 			}
 		}
@@ -161,7 +161,7 @@ class Controller_Social extends Controller_MainController
 		$social=Social::getByTypeAndProfile('facebook', Profile::current()->getId());
 		$social->delete();
 		
-		Flash::set('3fs app permissions revoked succesfully.');
+		my\helpers\Flash::set('3fs app permissions revoked succesfully.');
 		HTTP::redirect('/social/facebook');
 	}
 }
