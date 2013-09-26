@@ -51,6 +51,12 @@ class Controller_Social extends Controller_MainController
 		{
 			$this->template->set('info', unserialize($social->getData()));
 		}
+		
+		$facebook=FacebookWrapper::getObject();
+		if($facebook->getUser())
+		{
+			$this->template->set('revoke', true);
+		}
 	}
 	
 	public function action_twitter_app()
@@ -142,7 +148,20 @@ class Controller_Social extends Controller_MainController
 	
 	public function action_facebook_revoke()
 	{
-		$user_profile=$facebook->api('/'.$user.'/permissions', 'delete');
+		$facebook=FacebookWrapper::getObject();
+		
+		if(!$facebook->getUser())
+		{
+			HTTP::redirect('/social/facebook');
+		}
+		
+		$facebook->api('/'.$facebook->getUser().'/permissions', 'delete');
+		$facebook->destroySession();
+		
+		$social=Social::getByTypeAndProfile('facebook', Profile::current()->getId());
+		$social->delete();
+		
+		Flash::set('3fs app permissions revoked succesfully.');
 		HTTP::redirect('/social/facebook');
 	}
 }

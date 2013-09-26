@@ -1,6 +1,8 @@
 <?php echo $header; ?>
 <a class="btn btn-primary" href="/social/facebook_app">Update</a>
+<?php if(isset($revoke)){ ?>
 <a href="/social/facebook_revoke">Revoke</a>
+<?php } ?>
 <?php if(isset($info)){ ?>
 <div>
 <br/>

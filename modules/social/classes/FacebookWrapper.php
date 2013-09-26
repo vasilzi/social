@@ -1,16 +1,28 @@
 <?php
 class FacebookWrapper
 {
-	public static function authorize()
+	private static function getConfig()
 	{
+		return Kohana::$config->load('social')->get('facebook');
+	}
+	
+	public static function getObject()
+	{
+		$config=self::getConfig();
 		$profile_id=Profile::current()->getId();
-		$config=Kohana::$config->load('social')->get('facebook');
 		
 		$facebook = new Facebook(array(
 				'appId'  => $config['appId'],
 				'secret' => $config['secret'],
 		));
 		
+		return $facebook;
+	}
+	
+	public static function authorize()
+	{
+		$config=self::getConfig();
+		$facebook=FacebookWrapper::getObject();
 		// Get User ID
 		$user = $facebook->getUser();
 		
