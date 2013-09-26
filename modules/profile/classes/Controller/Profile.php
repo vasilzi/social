@@ -108,4 +108,19 @@ class Controller_Profile extends Controller_MainController
 		$this->template->bind('post', $post)
 		->bind('errors', $errors);
 	}
+	
+	public function action_list()
+	{
+		$profiles=Profile::getAll();
+		
+		$social_profiles=array();
+		foreach($profiles as $profile)
+		{
+			$sp=new SocialProfile();
+			$sp->setProfileId($profile->getId());
+			$social_profiles[]=$sp;
+		}
+		
+		$this->template->set('profiles', $social_profiles);
+	}
 }

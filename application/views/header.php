@@ -19,11 +19,12 @@
     <div class="header">
         <ul class="nav nav-pills pull-right">
           <?php $current_url=Request::current()->url(); ?>
-          <li <?php echo $current_url=='/'?'class="active"':''?>><a href="/">Home</a></li>
           <?php if(!Profile::loggedIn()){ ?>
           <li <?php echo $current_url=='/profile/login'?'class="active"':''?>><a href="/profile/login">Login</a></li>
           <li <?php echo $current_url=='/profile/register'?'class="active"':''?>><a href="/profile/register">Register</a></li>
           <?php } else { ?>
+          <li <?php echo $current_url=='/'?'class="active"':''?>><a href="/">Home</a></li>
+          <li <?php echo $current_url=='/profile/list'?'class="active"':''?>><a href="/profile/list">List</a></li>
           <li><a href="/profile/logout">Logout</a></li>
           <?php } ?>
         </ul>

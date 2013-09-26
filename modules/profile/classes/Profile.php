@@ -51,6 +51,11 @@ class Profile {
 		return DB::select()->from('profile')->where('email', '=', $email)->and_where('password', '=', $password)->as_object('Profile')->execute()->current();
 	}
 	
+	public static function getAll()
+	{
+		return DB::select()->from('profile')->as_object('Profile')->execute();
+	}
+	
 	public function getId()
 	{
 		return $this->id;

@@ -14,7 +14,7 @@ class Controller_Social extends Controller_MainController
 		
 		$user_profile=$facebook->api($facebook->getUser());
 		
-		$avatar=json_decode(file_get_contents("http://graph.facebook.com/".$facebook->getUser()."/picture?type=large&redirect=false"));
+		$avatar=json_decode(file_get_contents("http://graph.facebook.com/".$facebook->getUser()."/picture?redirect=false"));
 		$avatar=$avatar->data->url;
 		
 		$social=new Social();
