@@ -121,6 +121,12 @@ class Controller_Profile extends Controller_MainController
 		$social_profiles=array();
 		foreach($profiles as $profile)
 		{
+			$profile=new Profile(
+					$profile['id'],
+					$profile['email'],
+					$profile['password'],
+					$profile['confirmation']);
+			
 			$sp=new SocialProfile();
 			$sp->setProfileId($profile->getId());
 			$social_profiles[]=$sp;

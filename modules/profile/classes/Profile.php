@@ -6,6 +6,14 @@ class Profile {
 	private $password;
 	private $confirmation;
 	
+	function __construct($id=null, $email=null, $password=null, $confirmation=null)
+	{
+		$this->id=$id;
+		$this->email=$email;
+		$this->password=$password;
+		$this->confirmation=$confirmation;
+	}
+	
 	public function store()
 	{
 		// MYSQL: ON DUPLICATE KEY
@@ -77,7 +85,8 @@ class Profile {
 	
 	public static function getAll()
 	{
-		return DB::select()->from('profile')->as_object('Profile')->execute();
+		$iter=new ArrayIterator(DB::select()->from('profile')->execute()->as_array());
+		return $iter;
 	}
 	
 	public function getId()
